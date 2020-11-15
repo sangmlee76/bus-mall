@@ -24,7 +24,7 @@ var voteCounter = 0;
 var uniqueRandomNumbers = []; // added this from lecture 12
 var voteCountList = [];
 var productNameList = [];
-var viewsCountList = [];
+
 
 
 // Setting up to update the DOM
@@ -38,7 +38,7 @@ function Product(productName, fileExtension) {
   this.title = this.alt = productName;
   this.votes = 0;
   this.numberOfViews = 0;
-  this.itemShown = 0
+ 
 
   allProductsList.push(this);
 }
@@ -150,6 +150,16 @@ function voteForImages(e) {
     generateBarChart();
   }
 }
+
+function putProductDataIntoLS(){
+  // turns the allProductsList array into JSON
+  var stringifiedProducts = JSON.stringify(allProductsList);
+  // put the JSON array into local storage
+  localStorage.setItem('products', stringifiedProducts);
+}
+
+
+
 
 // Step 6. Create an event listener to listen to the container
 containerElement.addEventListener('click', voteForImages);
