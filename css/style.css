@@ -16,9 +16,14 @@ h1{
 
 h3{
   height: 70px;
+  width: 320px;
+  border: 1px solid blue;
+  color: blue;
+  line-height: 70px;
+  text-align: center;
   width: 500px;
   color: blue;
-}
+
 
 img{
   width: 200px;
@@ -32,4 +37,13 @@ footer{
 
 button{
   margin-top: 50px;
+  margin-bottom: 50px;
 }
+
+ul{
+  border: 1px solid blue;
+  height: 350px;
+  width: 300px;
+  padding: 10px;
+}
+
