@@ -1,7 +1,7 @@
-# LAB - 12
+# LAB - 13
 
-## BusMall v2
-New requirements to update some of the logic on how to handle the voting and adding a chart.
+## BusMall v3
+New requirements to use local storage
 
 
 ## Author: Sang Lee | sanglee76@yahoo.com
