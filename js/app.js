@@ -73,6 +73,10 @@ new Product('wine-glass', 'jpg');
 
 // Step 4. Create a render function to put three images on the same page
 function render() {
+  // retrieve the arrays from local storage before starting the next round of voting
+  getProductDataOutOfLS()
+
+  // start voting by getting the random numbers that will trigger the images
   getUniqueRandomNumbers();
 
   var firstIndexNumber = uniqueRandomNumbers[0];
@@ -149,8 +153,11 @@ function voteForImages(e) {
     collectNameAndVoteData();
     generateBarChart();
   }
+  // once the voting has completed and resulted charted, the completed survey data should be sent to local storage for keeping
+  putProductDataIntoLS();
 }
 
+// function to save the data into local storage
 function putProductDataIntoLS(){
   // turns the allProductsList array into JSON
   var stringifiedProducts = JSON.stringify(allProductsList);
@@ -158,8 +165,24 @@ function putProductDataIntoLS(){
   localStorage.setItem('products', stringifiedProducts);
 }
 
+// function to get product information out of storage to be used
+function getProductDataOutOfLS(){
+  // get the Product JSON aray out of local storage
+  var productsFromLocalStorage = localStorage.getItem('products');
+  //turn the JSON array back into javascript
+  var parsedProducts = JSON.parse(productsFromLocalStorage);
 
+  // function call to get the parsed object literals converted back to object instances
+  generateNewProducts(parsedProducts);
+}
 
+// function to push the object literals through the constructor function to convert them back to object instances
+function generateNewProducts(newProducts){
+  // allProductsList = [];  <-- normally we would empty the array out but we want to have a continuing list so we keep this in
+  for (var i=0; i < newProducts.length; i++){
+    new Product(newProducts[i].filePath, newProducts[i].alt, newProducts[i].title, newProducts[i].votes, newProducts[i].numberOfViews);
+  }
+}
 
 // Step 6. Create an event listener to listen to the container
 containerElement.addEventListener('click', voteForImages);
