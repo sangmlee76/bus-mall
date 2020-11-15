@@ -24,6 +24,7 @@ var voteCounter = 0;
 var uniqueRandomNumbers = []; // added this from lecture 12
 var voteCountList = [];
 var productNameList = [];
+var viewsCountList = [];
 
 
 
@@ -38,7 +39,7 @@ function Product(productName, fileExtension) {
   this.title = this.alt = productName;
   this.votes = 0;
   this.numberOfViews = 0;
- 
+
 
   allProductsList.push(this);
 }
@@ -73,11 +74,16 @@ new Product('wine-glass', 'jpg');
 
 // Step 4. Create a render function to put three images on the same page
 function render() {
-  // retrieve the arrays from local storage before starting the next round of voting
-  getProductDataOutOfLS()
+  // first we check to see if anything is stored in local storage (if so, it means we have data in local storage and we need to bring that in to add to it for new testing data), otherwise, we kickoff the survey as if being started for the first customer response.
+  if (localStorage.productsFromLocalStorage) {
+    // retrieve the arrays from local storage before starting the next round of voting
+    getProductDataOutOfLS();
+    getUniqueRandomNumbers();
+  } else {
+    // start voting by getting the random numbers that will trigger the images
+    getUniqueRandomNumbers();
+  }
 
-  // start voting by getting the random numbers that will trigger the images
-  getUniqueRandomNumbers();
 
   var firstIndexNumber = uniqueRandomNumbers[0];
   var secondIndexNumber = uniqueRandomNumbers[1];
@@ -158,17 +164,17 @@ function voteForImages(e) {
 }
 
 // function to save the data into local storage
-function putProductDataIntoLS(){
+function putProductDataIntoLS() {
   // turns the allProductsList array into JSON
   var stringifiedProducts = JSON.stringify(allProductsList);
   // put the JSON array into local storage
-  localStorage.setItem('products', stringifiedProducts);
+  localStorage.setItem('productsInLocalStorage', stringifiedProducts);
 }
 
 // function to get product information out of storage to be used
-function getProductDataOutOfLS(){
+function getProductDataOutOfLS() {
   // get the Product JSON aray out of local storage
-  var productsFromLocalStorage = localStorage.getItem('products');
+  var productsFromLocalStorage = localStorage.getItem('productsInLocalStorage');
   //turn the JSON array back into javascript
   var parsedProducts = JSON.parse(productsFromLocalStorage);
 
@@ -177,9 +183,9 @@ function getProductDataOutOfLS(){
 }
 
 // function to push the object literals through the constructor function to convert them back to object instances
-function generateNewProducts(newProducts){
+function generateNewProducts(newProducts) {
   // allProductsList = [];  <-- normally we would empty the array out but we want to have a continuing list so we keep this in
-  for (var i=0; i < newProducts.length; i++){
+  for (var i = 0; i < newProducts.length; i++) {
     new Product(newProducts[i].filePath, newProducts[i].alt, newProducts[i].title, newProducts[i].votes, newProducts[i].numberOfViews);
   }
 }
@@ -189,8 +195,8 @@ containerElement.addEventListener('click', voteForImages);
 
 
 // Step 8. Create a function to collect names and the votes for each item
-function collectNameAndVoteData(){
-  for (var i=0; i < allProductsList.length; i++){
+function collectNameAndVoteData() {
+  for (var i = 0; i < allProductsList.length; i++) {
     productNameList.push(allProductsList[i].title);
     voteCountList.push(allProductsList[i].votes);
     viewsCountList.push(allProductsList[i].numberOfViews);
@@ -200,67 +206,67 @@ function collectNameAndVoteData(){
 
 // Step 9. Create a function to create the chart (using the code from chart.js: https://www.chartjs.org/docs/latest/)
 function generateBarChart() {
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        //labels: productNameList,
-        datasets: [{
-            label: '# of Votes',
-            data: voteCountList,           
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgb(204, 102, 255, 0.2)',
-                'rgb(102, 255, 102, 0.2)',
-                'rgb(102, 102, 51, 0.2)',
-                'rgb(255, 51, 0, 0.2)',
-                'rgb(51, 51, 255, 0.2)',
-                'rgb(255, 153, 153, 0.2)',
-                'rgb(255, 102, 204, 0.2)',
-                'rgb(0, 102, 153, 0.2)',
-                'rgb(255, 0, 255, 0.2)',
-                'rgb(102, 153, 0, 0.2)',
-                'rgb(255, 102, 0, 0.2)',
-                'rgb(181, 33, 34, 0.2)',
-                'rgb(255, 116, 34, 0.2)',
-                'rgb(135, 213, 216, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1,
-            order: 2
-        },{    
-          label: '# of Views',
-          data: viewsCountList,
-          type: 'line',
-          backgroundColor: [
-            'rgb(255, 255, 255, 0.2)',
-          ],
-          order: 1
-  }],
-  labels: productNameList,
-},    
-      options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
+      //labels: productNameList,
+      datasets: [{
+        label: '# of Votes',
+        data: voteCountList,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgb(204, 102, 255, 0.2)',
+          'rgb(102, 255, 102, 0.2)',
+          'rgb(102, 102, 51, 0.2)',
+          'rgb(255, 51, 0, 0.2)',
+          'rgb(51, 51, 255, 0.2)',
+          'rgb(255, 153, 153, 0.2)',
+          'rgb(255, 102, 204, 0.2)',
+          'rgb(0, 102, 153, 0.2)',
+          'rgb(255, 0, 255, 0.2)',
+          'rgb(102, 153, 0, 0.2)',
+          'rgb(255, 102, 0, 0.2)',
+          'rgb(181, 33, 34, 0.2)',
+          'rgb(255, 116, 34, 0.2)',
+          'rgb(135, 213, 216, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1,
+        order: 2
+      }, {
+        label: '# of Views',
+        data: viewsCountList,
+        type: 'line',
+        backgroundColor: [
+          'rgb(255, 255, 255, 0.2)',
+        ],
+        order: 1
+      }],
+      labels: productNameList,
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
     }
-});
+  });
 
 }
 
