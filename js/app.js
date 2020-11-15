@@ -1,7 +1,18 @@
 /* 
-1. Goal:
-2. Task:
+1. Goal: Set up initial BusMall voting to take 25 votes and then display the voting results when a "View Results" button is clicked.
+2. Tasks:
+  a. Create mechanism to allow a user to vote on product with 3 images being displayed per round of voting
+  b. Create mechanism to collect votes 
+  c. Create mechanism to stop votes at 25 rounds
+  d. Create mechanism to tally up votes per product
+  e. Create mechanism to tally up number of times product was seen
+  f. Create mechanism to "View Results" with a button
+  g. Create a mechanism to diplay the results when the button is clicked
 3. Output:
+  a. 3 images to vote with
+  b. total of 25 votes allowed, then voting stops
+  c. a "View Results" button
+  d. When the "View Results" button is pressed, it will return the output that shows votes for each product as well as number of times it was seen
 */
 
 // Global variables
@@ -14,6 +25,7 @@ var containerElement = document.getElementById('container');
 var viewResultsElement = document.getElementById('viewResults');
 var votingResultsElement = document.getElementById('votingResults');
 var listOfResultsParent = document.getElementById('listOfResults');
+var votingRounds = 25;
 
 var firstRandomIndexNumber = 0;
 var secondRandomIndexNumber = 0;
@@ -28,7 +40,7 @@ function Product(productName){
   //this.filePath = `img/${productName}.png`;   // TODO: need to figure out how to make filePath work with differnet image file extensions and non-.jpg files in the img folder
   this.title = this.alt = productName;
   this.votes = 0;
-  this.numberOfTimesSeen = 0;
+  this.numberOfViews = 0;
 
   allProductsList.push(this);
 }
@@ -115,7 +127,7 @@ function handleClick(e){
       allProductsList[i].votes++;
     }
     // counts the number of times this item has been seen
-    allProductsList[i].numberOfTimesSeen++;
+    allProductsList[i].numberOfViews++;
   }
   // once we have handled the event, added the vote, we need to render the next set of images for voting
   render();
@@ -134,14 +146,13 @@ function handleViewResultsClick(e){
   // create list items with the output of the results
   for (var i = 0; i < allProductsList.length; i++) {
     var productListItem = document.createElement('li')
-    productListItem.textContent = `${allProductsList[i].productName} had ${allProductsList[i].votes}, and was seen ${allProductsList[i].numberOfTimesSeen} times.`;
+    productListItem.textContent = `${allProductsList[i].productName} had ${allProductsList[i].votes}, and was seen ${allProductsList[i].numberOfViews} times.`;
     listOfResultsParent.appendChild(productListItem);
   }
   
 }
 
 // Event listener for image voting
-var votingRounds = 25;
 
 for (var votingRoundCount = 0; votingRoundCount < votingRounds; votingRoundCount++){
   containerElement.addEventListener('click', handleClick);
