@@ -1,20 +1,15 @@
 'use strict';
 
 /* 
-1. Goal: Set up initial BusMall voting to take 25 votes and then display the voting results when a "View Results" button is clicked.
+1. Goal: Update BusMall with new logic on voting and add a chart
 2. Tasks:
-  a. Create mechanism to allow a user to vote on product with 3 images being displayed per round of voting
-  b. Create mechanism to collect votes 
-  c. Create mechanism to stop votes at 25 rounds
-  d. Create mechanism to tally up votes per product
-  e. Create mechanism to tally up number of times product was seen
-  f. Create mechanism to "View Results" with a button
-  g. Create a mechanism to diplay the results when the button is clicked
+  a. ensure two rounds of voting does not have same images
+  b. add an additional property to track how many times a product has appeared in a voting session
+  c. add a bar chart with total votes (i.e. clicks); chart comes only after voting is complete - place it below the images
 3. Output:
-  a. 3 images to vote with
-  b. total of 25 votes allowed, then voting stops
-  c. a "View Results" button
-  d. When the "View Results" button is pressed, it will return the output that shows votes for each product as well as number of times it was seen
+  a. total of 25 votes allowed, then voting stops
+  b. a bar chart with total votes and total views; appears only after all votes are complete
+  
 */
 
 
@@ -27,6 +22,9 @@ var containerElement = document.getElementById('container');
 var votingRounds = 25;
 var voteCounter = 0;
 var uniqueRandomNumbers = []; // added this from lecture 12
+var voteCountList = [];
+var productNameList = [];
+var viewsCountList = [];
 
 
 // Setting up to update the DOM
@@ -40,6 +38,7 @@ function Product(productName, fileExtension) {
   this.title = this.alt = productName;
   this.votes = 0;
   this.numberOfViews = 0;
+  this.itemShown = 0
 
   allProductsList.push(this);
 }
@@ -101,7 +100,7 @@ function getUniqueRandomNumbers() {
   uniqueRandomNumbers = []; // this is to empty the array before repopulating it each round
 
   // get each of the random numbers from the generator using a for loop, but each round of getting the nunber also checks for uniqueness
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 6; i++) {
     var randomNumber = randomNumberGenerator();
 
     // ensures random number is unique by checking to see if the new random number obtained is already in the unqiueRandomNumbers array. If it is, then it is NOT unique and therefore will call the generator to get a new random number.
@@ -114,7 +113,7 @@ function getUniqueRandomNumbers() {
   }
 
   // ensure the array is only three values long; ** NOTE: this is still not clear after reviewing the lecture -- about a future where more numbers might be required -- need to ask **
-  while (uniqueRandomNumbers.length > 3) {
+  while (uniqueRandomNumbers.length > 6) {
     uniqueRandomNumbers.pop();
   }
 
@@ -147,32 +146,91 @@ function voteForImages(e) {
   // if the voting round is 25, remove the event listener -- this will stop the ability to vote
   if (voteCounter === votingRounds) {
     containerElement.removeEventListener('click', voteForImages);
+    collectNameAndVoteData();
+    generateBarChart();
   }
-}
-
-// Step 9. Create an event handler for View Results button; when clicked it displays the outcome of the voting with each item on the catalog with the votes and the number of times seen
-function handleViewResultsClick() {
-
-  // create a list title with h3
-  var listTitle = document.createElement('h2');
-  listTitle.textContent = "Voting Results";
-  votingResultsElement.appendChild(listTitle);
-
-  // create list items with the output of the results
-  for (var i = 0; i < allProductsList.length; i++) {
-    var productListItem = document.createElement('li');
-    productListItem.textContent = `${allProductsList[i].title} had ${allProductsList[i].votes} votes, and was seen ${allProductsList[i].numberOfViews} times.`;
-    listOfResultsParent.appendChild(productListItem);
-  }
-
 }
 
 // Step 6. Create an event listener to listen to the container
 containerElement.addEventListener('click', voteForImages);
 
 
-// Step 8. Create an event listener for View Results button
-viewResultsElement.addEventListener('click', handleViewResultsClick);
+// Step 8. Create a function to collect names and the votes for each item
+function collectNameAndVoteData(){
+  for (var i=0; i < allProductsList.length; i++){
+    productNameList.push(allProductsList[i].title);
+    voteCountList.push(allProductsList[i].votes);
+    viewsCountList.push(allProductsList[i].numberOfViews);
+  }
+
+}
+
+// Step 9. Create a function to create the chart (using the code from chart.js: https://www.chartjs.org/docs/latest/)
+function generateBarChart() {
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        //labels: productNameList,
+        datasets: [{
+            label: '# of Votes',
+            data: voteCountList,           
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgb(204, 102, 255, 0.2)',
+                'rgb(102, 255, 102, 0.2)',
+                'rgb(102, 102, 51, 0.2)',
+                'rgb(255, 51, 0, 0.2)',
+                'rgb(51, 51, 255, 0.2)',
+                'rgb(255, 153, 153, 0.2)',
+                'rgb(255, 102, 204, 0.2)',
+                'rgb(0, 102, 153, 0.2)',
+                'rgb(255, 0, 255, 0.2)',
+                'rgb(102, 153, 0, 0.2)',
+                'rgb(255, 102, 0, 0.2)',
+                'rgb(181, 33, 34, 0.2)',
+                'rgb(255, 116, 34, 0.2)',
+                'rgb(135, 213, 216, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1,
+            order: 2
+        },{    
+          label: '# of Views',
+          data: viewsCountList,
+          type: 'line',
+          backgroundColor: [
+            'rgb(255, 255, 255, 0.2)',
+          ],
+          order: 1
+  }],
+  labels: productNameList,
+},    
+      options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+}
+
 
 // Function call
 render();
