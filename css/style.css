@@ -21,8 +21,9 @@ h3{
   color: blue;
   line-height: 70px;
   text-align: center;
-  
-}
+  width: 500px;
+  color: blue;
+
 
 img{
   width: 200px;
@@ -45,3 +46,4 @@ ul{
   width: 300px;
   padding: 10px;
 }
+

@@ -1,4 +1,5 @@
 'use strict';
+
 /* 
 1. Goal: Set up initial BusMall voting to take 25 votes and then display the voting results when a "View Results" button is clicked.
 2. Tasks:
@@ -15,6 +16,7 @@
   c. a "View Results" button
   d. When the "View Results" button is pressed, it will return the output that shows votes for each product as well as number of times it was seen
 */
+
 
 // Step 1. Global variables
 var allProductsList = [];
@@ -33,7 +35,6 @@ var votingResultsElement = document.getElementById('votingResults');
 var listOfResultsParent = document.getElementById('listOfResults');
 
 // Step 2. Constructor functions
-
 function Product(productName, fileExtension) {
   this.filePath = `/img/${productName}.${fileExtension}`;
   this.title = this.alt = productName;
