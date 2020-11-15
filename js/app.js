@@ -153,7 +153,7 @@ function voteForImages(e) {
 function handleViewResultsClick() {
 
   // create a list title with h3
-  var listTitle = document.createElement('h3');
+  var listTitle = document.createElement('h2');
   listTitle.textContent = "Voting Results";
   votingResultsElement.appendChild(listTitle);
 
